@@ -1,0 +1,24 @@
+{
+  "name": "genetic-steering",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ert135/genetic-steering.git"
+  },
+  "author": "Robert Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ert135/genetic-steering/issues"
+  },
+  "homepage": "https://github.com/ert135/genetic-steering#readme",
+  "dependencies": {
+    "p5": "^0.7.2",
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.3"
+  }
+}
