@@ -18,7 +18,11 @@
   "homepage": "https://github.com/ert135/genetic-steering#readme",
   "dependencies": {
     "p5": "^0.7.2",
+    "ts-loader": "^5.3.3",
     "typescript": "^3.2.2",
     "webpack": "^4.28.3"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.2.1"
   }
 }
