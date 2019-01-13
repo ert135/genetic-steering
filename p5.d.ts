@@ -590,7 +590,8 @@ declare class p5 {
     //
     //   param "kind" has invalid type: Number/Constant
     //
-    // beginShape(kind: Number/Constant): any
+    beginShape(kind: Number): any
+    beginShape(): any
     
     /**
      * Specifies vertex coordinates for Bezier curves.
@@ -612,7 +613,7 @@ declare class p5 {
     //
     //   param "mode" has invalid type: Number/Constant
     //
-    // endShape(mode: Number/Constant): any
+    endShape(mode: any): any
     
     /**
      * Specifies vertex coordinates for quadratic Bezier curves.
@@ -2247,6 +2248,7 @@ declare class p5 {
        * another, or subtracts two independent vectors.
        */
       sub(x: number|p5.Vector|any[], y?: number, z?: number): p5.Vector
+      sub(vec1: p5.Vector, vec2: p5.Vector): p5.Vector
       
       /**
        * Multiply the vector by a scalar.
