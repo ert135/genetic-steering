@@ -3,6 +3,8 @@
 
 //import grid
 import Boid from './Boid';
+import Food from './Food';
+import * as R from 'ramda';
 declare const p5: any;
 
 //extend existing window property, we have to put the draw and setup 
@@ -21,30 +23,43 @@ declare global {
 
 function p5Wrapper( sketch: p5 ): any {
     let boids: Boid[] = [];
+    let foods: Food[] = [];
     let canvasWidth = window.innerWidth;
     let canvasHeight = window.innerHeight;
 
     sketch.setup = function() {
-        console.log('Setup called here');
-        sketch.createCanvas(canvasWidth - 30, canvasHeight-40);
-        for (var i = 0; i<10; i++) {
+        sketch.createCanvas(canvasWidth, canvasHeight);
+        for (var i = 0; i<100; i++) {
             boids.push(
                 new Boid(
-                    new p5.Vector(Math.floor(Math.random() * canvasWidth-1), 
-                    Math.floor(Math.random() * 799)), 
+                    new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)), 
                     sketch,
                     canvasWidth,
                     window.innerHeight
                 )
             )
+            foods.push(
+                new Food(
+                    sketch,
+                    new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight))
+                )
+            )
         }
     };
+
+    const isEaten = (t: Food): boolean => {return !t.isEaten()}
 
     sketch.draw = function() {
         sketch.background(1);
         boids.forEach((boid: Boid) => {
-            boid.draw()
-        })
+            boid.eat(foods);
+            boid.update();
+            boid.draw();
+        });
+        foods.forEach((food: Food) => {
+            food.draw();
+        });
+        foods = R.filter(isEaten, foods);
     };
 };
 

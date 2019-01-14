@@ -1,3 +1,5 @@
+import Food from './Food';
+
 export default class Boid {
     private initialPosition: p5.Vector
     private sketch: p5;
@@ -42,19 +44,35 @@ export default class Boid {
         this.checkEdges();
     };
 
-    private seek(target: p5.Vector): void {
+    public seek(target: p5.Vector): void {
         var desired = target.sub(this.position);
-        target.sub(this.position);
-    
-        // Scale to maximum speed
         desired.setMag(this.maxSpeed);
     
-        // Steering = Desired minus velocity
         var steer = desired.sub(this.velocity);
 
         steer.limit(this.maxforce); // Limit to maximum steering force
     
         this.applyForce(steer);
+    };
+
+    public eat(food: Food[]): void {
+        let record = Infinity;
+        let closest: Food = null;
+        //Could refactor to use reduce
+        food.forEach((item: Food, index: number) => {
+            let dist = this.sketch.dist(this.position.x, this.position.y, item.getPosition().x, item.getPosition().y);
+            if(dist < record) {
+                record = dist;
+                closest = item;
+            }
+            if(record < 5){
+                item.setEaten()
+            }
+        });
+
+        if (closest !== null){
+            this.seek(closest.getPosition());
+        }
     };
 
     public draw() {
@@ -67,8 +85,8 @@ export default class Boid {
             this.sketch.rotate(theta);
             this.sketch.beginShape();
                 this.sketch.vertex(0, -this.radius * 2);
-                this.sketch.vertex(-this.radius, this.radius * 2);
-                this.sketch.vertex(this.radius, this.radius * 2);
+                this.sketch.vertex(-this.radius, this.radius);
+                this.sketch.vertex(this.radius, this.radius);
             this.sketch.endShape(close);
         this.sketch.pop();
     };
@@ -81,12 +99,12 @@ export default class Boid {
         return Math.random() * (max - min) + min;
     };
 
-    updateEdges(canvasWidth: number, canvasHeight: number) {
+    private updateEdges(canvasWidth: number, canvasHeight: number) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
     };
 
-    checkEdges() {
+    private checkEdges() {
         if (this.position.x > this.canvasWidth) {
             this.position.x = 0;
         }
@@ -104,7 +122,7 @@ export default class Boid {
         }
     };
 
-    checkMouse() {
+    private checkMouse() {
         let mouseVector = new p5.Vector(this.sketch.mouseX, this.sketch.mouseY);
         let distanceVector = mouseVector.sub(this.position);
         let distanceScalar = distanceVector.mag();
@@ -113,7 +131,7 @@ export default class Boid {
         }
     };
 
-    buildSteeringForce(mouseVector: p5.Vector, distanceVector: p5.Vector) {
+    private buildSteeringForce(mouseVector: p5.Vector, distanceVector: p5.Vector) {
         let desired = distanceVector.copy().mult(-1);
         let steer = desired.sub(this.velocity)
         steer.limit(this.maxforce);
