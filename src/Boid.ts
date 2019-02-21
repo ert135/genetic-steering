@@ -42,10 +42,9 @@ export default class Boid {
         this.getDefaultDna();
     };
 
-    public behaviours(goodBehaviour: any, badBehaviour: any) {
-        this.goodSteeringForce = new p5.Vector(0, 0);
-        this.badSteeringForce =  new p5.Vector(0, 0);
-
+    public behaviours(goodBehaviour: Array<Food>, badBehaviour: Array<Food>) {
+        this.goodSteeringForce = this.eat(goodBehaviour);
+        this.badSteeringForce = this.eat(badBehaviour)
         this.goodSteeringForce.mult(this.dna[0]);
         this.badSteeringForce.mult(this.dna[1]);
 
@@ -67,12 +66,12 @@ export default class Boid {
     
         var steer = desired.sub(this.velocity);
 
-        steer.limit(this.maxforce); // Limit to maximum steering force
+        //steer.limit(this.maxforce); // Limit to maximum steering force
     
         return steer;
     };
 
-    public eat(food: Food[]): void {
+    public eat(food: Food[]): p5.Vector {
         let record = Infinity;
         let closest: Food = null;
 
@@ -84,18 +83,15 @@ export default class Boid {
                 closest = item;
             }
             if (record < 10) {
-                console.log('Closest here is ', closest);
                 closest.setEaten();
             }
         });
 
         if (closest !== null) {
-            if(closest.poisoned()) {
-                this.buildAvoidSteeringForce(closest.getPosition())
-            } else {
-               return this.seek(closest.getPosition());
-            }
+            return this.seek(closest.getPosition());
         };
+
+        return this.sketch.createVector(0, 0);
     };
 
     public draw() {
@@ -119,8 +115,9 @@ export default class Boid {
     };
 
     private getDefaultDna(): any {
-        this.dna[0] = random(-5, 5);
-        this.dna[1] = random(-5, 5);
+        this.dna=[];
+        this.dna[0] = this.sketch.random(0, 0);
+        this.dna[1] = this.sketch.random(0.01, -0.01);
     }
 
     private getRandomArbitrary(min: number, max: number) {

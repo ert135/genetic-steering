@@ -1202,7 +1202,7 @@ declare class p5 {
     /**
      * Creates a new p5.Vector (the datatype for storing vectors).
      */
-    createVector(x?: number, y?: number, z?: number): void
+    createVector(x?: number, y?: number, z?: number): p5.Vector
     
     // src/math/noise.js
     

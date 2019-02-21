@@ -24,6 +24,7 @@ declare global {
 function p5Wrapper( sketch: p5 ): any {
     let boids: Boid[] = [];
     let foods: Food[] = [];
+    let poisioned: Food[] = [];
     let canvasWidth = window.innerWidth;
     let canvasHeight = window.innerHeight;
 
@@ -57,13 +58,15 @@ function p5Wrapper( sketch: p5 ): any {
         )
     };
 
-    const isEaten = (t: Food): boolean => !t.isEaten()
+    const isNotEaten = (t: Food): boolean => !t.isEaten();
+    const isPoision = (t: Food): boolean => t.poisoned() && !t.isEaten();
 
     sketch.draw = function() {
         sketch.background(1);
-        foods = R.filter(isEaten, foods);
+        foods = R.filter(isNotEaten, foods);
+        poisioned = R.filter(isPoision, foods)
         boids.forEach((boid: Boid) => {
-            boid.eat(foods);
+            boid.behaviours(foods,poisioned);
             boid.update();
             boid.draw();
         });
