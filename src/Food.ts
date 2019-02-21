@@ -5,11 +5,11 @@ export default class Food {
     private isPoision: boolean;
     private eaten: boolean;
 
-    constructor(p5Ref: p5, position: p5.Vector) {
+    constructor(p5Ref: p5, position: p5.Vector, isPoision: boolean) {
         this.sketch = p5Ref;
         this.position = position;
         this.radius = 6;
-        this.isPoision = false
+        this.isPoision = isPoision
     };
 
     public draw() {
@@ -29,10 +29,15 @@ export default class Food {
     }
 
     public setEaten(): void {
+        console.log('Eaten')
         this.eaten = true;
     }
 
     public isEaten() {
         return this.eaten;
+    }
+
+    public poisoned(): boolean {
+        return this.isPoision;
     }
 }

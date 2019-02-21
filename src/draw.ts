@@ -30,27 +30,38 @@ function p5Wrapper( sketch: p5 ): any {
     sketch.setup = function() {
         sketch.createCanvas(canvasWidth, canvasHeight);
         for (var i = 0; i<100; i++) {
-            boids.push(
-                new Boid(
-                    new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)), 
-                    sketch,
-                    canvasWidth,
-                    window.innerHeight
-                )
-            )
             foods.push(
                 new Food(
                     sketch,
-                    new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight))
+                    new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)),
+                    false
                 )
             )
         }
+        for (var i = 0; i<30; i++) {
+            foods.push(
+                new Food(
+                    sketch,
+                    new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)),
+                    true
+                )
+            )
+        }
+        boids.push(
+            new Boid(
+                new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)), 
+                sketch,
+                canvasWidth,
+                window.innerHeight
+            )
+        )
     };
 
-    const isEaten = (t: Food): boolean => {return !t.isEaten()}
+    const isEaten = (t: Food): boolean => !t.isEaten()
 
     sketch.draw = function() {
         sketch.background(1);
+        foods = R.filter(isEaten, foods);
         boids.forEach((boid: Boid) => {
             boid.eat(foods);
             boid.update();
@@ -59,7 +70,6 @@ function p5Wrapper( sketch: p5 ): any {
         foods.forEach((food: Food) => {
             food.draw();
         });
-        foods = R.filter(isEaten, foods);
     };
 };
 
