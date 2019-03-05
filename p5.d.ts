@@ -141,7 +141,7 @@ declare class p5 {
     //   param "c2" has invalid type: Array/Number
     //   return has invalid type: Array/Number
     //
-    // lerpColor(c1: Array/Number, c2: Array/Number, amt: number): Array/Number
+    lerpColor(c1: Array<any>|Number, c2: Array<any>|Number, amt: number): Array<any>|Number
     
     /**
      * Extracts the HSL lightness value from a color or pixel array.

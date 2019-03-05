@@ -14,6 +14,9 @@ export default class Boid {
     private maxforce: number;
     private radius: number;
     private maxSpeed: number;
+    private health: number;
+    private color: any;
+    public dead: boolean;
 
     private dna: Array<number>;
     private goodSteeringForce: p5.Vector;;
@@ -39,6 +42,8 @@ export default class Boid {
         this.radius = 6;
         this.maxSpeed = 8;
 
+        this.health = 1;
+
         this.getDefaultDna();
     };
 
@@ -50,14 +55,27 @@ export default class Boid {
 
         this.applyForce(this.goodSteeringForce);
         this.applyForce(this.badSteeringForce);
-    }
+    };
 
     public update(): void {
+        this.health -= 0.001;
+        this.checkHealth()
         this.velocity.add(this.acceleration);
         this.velocity.limit(1);
         this.position.add(this.velocity);
         this.acceleration.mult(0);
         this.checkEdges();
+    };
+
+    private checkHealth() {
+        var green = this.sketch.color(0, 255, 0);
+        var red = this.sketch.color(255, 0, 0);
+
+        this.color = this.sketch.lerpColor(red, green, this.health);
+
+        if (this.health <= 0) {
+            this.dead = true;
+        }
     };
 
     public seek(target: p5.Vector): p5.Vector {
@@ -83,6 +101,11 @@ export default class Boid {
                 closest = item;
             }
             if (record < 10) {
+                // if(closest.poisoned){
+                //     this.health -= 0.05;
+                // } else if(!closest.poisoned) {
+                //     this.health += 0.5;
+                // }
                 closest.setEaten();
             }
         });
@@ -96,8 +119,8 @@ export default class Boid {
 
     public draw() {
         var theta = this.velocity.heading() + this.sketch.PI / 2;
-        this.sketch.fill(127);
-        this.sketch.stroke(200);
+        this.sketch.fill(this.color);
+        this.sketch.stroke(this.color);
         this.sketch.strokeWeight(1);
         this.sketch.push();
             this.sketch.translate(this.position.x, this.position.y);
@@ -122,11 +145,6 @@ export default class Boid {
 
     private getRandomArbitrary(min: number, max: number) {
         return Math.random() * (max - min) + min;
-    };
-
-    private updateEdges(canvasWidth: number, canvasHeight: number) {
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
     };
 
     private checkEdges() {
