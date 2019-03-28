@@ -26,18 +26,17 @@ export default class Food {
 
     public getPosition(): p5.Vector {
         return this.position.copy();
-    }
+    };
 
     public setEaten(): void {
-        console.log('Eaten')
         this.eaten = true;
-    }
+    };
 
     public isEaten() {
         return this.eaten;
-    }
+    };
 
     public poisoned(): boolean {
         return this.isPoision;
-    }
+    };
 }

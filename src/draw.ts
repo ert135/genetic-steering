@@ -1,7 +1,6 @@
 //import typescirpt types.
 ///<reference path='../p5-global-mode.d.ts'/>
 
-//import grid
 import Boid from './Boid';
 import Food from './Food';
 import * as R from 'ramda';
@@ -19,7 +18,7 @@ declare global {
         mouseClicked: any;
         started: boolean;
     }
-}
+};
 
 function p5Wrapper( sketch: p5 ): any {
     let boids: Boid[] = [];
@@ -60,18 +59,19 @@ function p5Wrapper( sketch: p5 ): any {
         }
     };
 
-    const isNotEaten = (t: Food): boolean => !t.isEaten();
+    const isNotEaten = (t: Food): boolean => !t.isEaten() && !t.poisoned();
     const isPoision = (t: Food): boolean => t.poisoned() && !t.isEaten();
 
     sketch.draw = function() {
         sketch.background(1);
-        foods = R.filter(isNotEaten, foods);
-        poisioned = R.filter(isPoision, foods)
+        const remainingFood = R.filter(isNotEaten, foods);
+        const poisionedFood = R.filter(isPoision, foods)
         boids.forEach((boid: Boid) => {
-            boid.behaviours(foods,poisioned);
+            boid.behaviours(remainingFood,poisionedFood);
             boid.update();
             boid.draw();
         });
+        foods = remainingFood.concat(poisionedFood);
         foods.forEach((food: Food) => {
             food.draw();
         });

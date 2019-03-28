@@ -81,12 +81,7 @@ export default class Boid {
     public seek(target: p5.Vector): p5.Vector {
         var desired = target.sub(this.position);
         desired.setMag(this.maxSpeed);
-    
-        var steer = desired.sub(this.velocity);
-
-        //steer.limit(this.maxforce); // Limit to maximum steering force
-    
-        return steer;
+        return desired.sub(this.velocity);
     };
 
     public eat(food: Food[]): p5.Vector {
@@ -94,7 +89,7 @@ export default class Boid {
         let closest: Food = null;
 
         //Could refactor to use reduce
-        food.forEach((item: Food, index: number) => {
+        food.forEach((item: Food) => {
             let dist = this.sketch.dist(this.position.x, this.position.y, item.getPosition().x, item.getPosition().y);
             if (dist < record) {
                 record = dist;
@@ -134,14 +129,14 @@ export default class Boid {
     };
 
     public applyForce(force: p5.Vector) {
-        this.acceleration.add(force);
+        this.acceleration.add(force.copy());
     };
 
     private getDefaultDna(): any {
         this.dna=[];
-        this.dna[0] = this.sketch.random(0, 0);
-        this.dna[1] = this.sketch.random(0.01, -0.01);
-    }
+        this.dna[0] = this.sketch.random(0.01, 0.01);
+        this.dna[1] = this.sketch.random(0, 0);
+    };
 
     private getRandomArbitrary(min: number, max: number) {
         return Math.random() * (max - min) + min;
