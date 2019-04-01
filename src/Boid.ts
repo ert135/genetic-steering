@@ -96,11 +96,11 @@ export default class Boid {
                 closest = item;
             }
             if (record < 10) {
-                // if(closest.poisoned){
-                //     this.health -= 0.05;
-                // } else if(!closest.poisoned) {
-                //     this.health += 0.5;
-                // }
+                if(closest.poisoned()){
+                    this.health -= 0.005;
+                } else if(!closest.poisoned()) {
+                    this.health += 0.005;
+                }
                 closest.setEaten();
             }
         });
@@ -131,6 +131,10 @@ export default class Boid {
     public applyForce(force: p5.Vector) {
         this.acceleration.add(force.copy());
     };
+
+    public isDead(): Boolean {
+        return (this.health <= 0);
+    }
 
     private getDefaultDna(): any {
         this.dna=[];

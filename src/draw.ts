@@ -61,16 +61,18 @@ function p5Wrapper( sketch: p5 ): any {
 
     const isNotEaten = (t: Food): boolean => !t.isEaten() && !t.poisoned();
     const isPoision = (t: Food): boolean => t.poisoned() && !t.isEaten();
+    const isNotDead = (b: Boid): boolean => !b.isDead();
 
     sketch.draw = function() {
         sketch.background(1);
         const remainingFood = R.filter(isNotEaten, foods);
-        const poisionedFood = R.filter(isPoision, foods)
+        const poisionedFood = R.filter(isPoision, foods);
         boids.forEach((boid: Boid) => {
             boid.behaviours(remainingFood,poisionedFood);
             boid.update();
             boid.draw();
         });
+        boids = R.filter(isNotDead, boids);
         foods = remainingFood.concat(poisionedFood);
         foods.forEach((food: Food) => {
             food.draw();
