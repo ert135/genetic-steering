@@ -67,17 +67,6 @@ export default class Boid {
         this.checkEdges();
     };
 
-    private checkHealth() {
-        var green = this.sketch.color(0, 255, 0);
-        var red = this.sketch.color(255, 0, 0);
-
-        this.color = this.sketch.lerpColor(red, green, this.health);
-
-        if (this.health <= 0) {
-            this.dead = true;
-        }
-    };
-
     public seek(target: p5.Vector): p5.Vector {
         var desired = target.sub(this.position);
         desired.setMag(this.maxSpeed);
@@ -85,31 +74,14 @@ export default class Boid {
     };
 
     public eat(food: Food[]): p5.Vector {
-        let record = Infinity;
-        let closest: Food = null;
-
-        //Could refactor to use reduce
-        food.forEach((item: Food) => {
-            let dist = this.sketch.dist(this.position.x, this.position.y, item.getPosition().x, item.getPosition().y);
-            if (dist < record) {
-                record = dist;
-                closest = item;
-            }
-            if (record < 10) {
-                if(closest.poisoned()){
-                    this.health -= 0.005;
-                } else if(!closest.poisoned()) {
-                    this.health += 0.005;
+        return this.seek(
+            food.reduce((closest: Food, currentValue: Food, index: number, array: Array<Food>) => {
+                let dist = this.sketch.dist(this.position.x, this.position.y, currentValue.getPosition().x, currentValue.getPosition().y);
+                if (dist < this.sketch.dist(this.position.x, this.position.y, closest.getPosition().x, closest.getPosition().y)) {
+                    return currentValue;
                 }
-                closest.setEaten();
-            }
-        });
-
-        if (closest !== null) {
-            return this.seek(closest.getPosition());
-        };
-
-        return this.sketch.createVector(0, 0);
+            }).getPosition()
+        );
     };
 
     public draw() {
@@ -164,14 +136,14 @@ export default class Boid {
         }
     };
 
-    private buildAvoidSteeringForce(target: p5.Vector) {
-        var desired = target.sub(this.position).mult(-1);
-        desired.setMag(this.maxSpeed);
-    
-        var steer = desired.sub(this.velocity);
+    private checkHealth() {
+        var green = this.sketch.color(0, 255, 0);
+        var red = this.sketch.color(255, 0, 0);
 
-        steer.limit(this.maxforce); // Limit to maximum steering force
-    
-        this.applyForce(steer);
+        this.color = this.sketch.lerpColor(red, green, this.health);
+
+        if (this.health <= 0) {
+            this.dead = true;
+        }
     };
 }

@@ -59,9 +59,9 @@ function p5Wrapper( sketch: p5 ): any {
         }
     };
 
-    const isNotEaten = (t: Food): boolean => !t.isEaten() && !t.poisoned();
-    const isPoision = (t: Food): boolean => t.poisoned() && !t.isEaten();
-    const isNotDead = (b: Boid): boolean => !b.isDead();
+    const isNotEaten = (food: Food): boolean => !food.isEaten() && !food.poisoned();
+    const isPoision = (food: Food): boolean => food.poisoned() && !food.isEaten();
+    const isNotDead = (boid: Boid): boolean => !boid.isDead();
 
     sketch.draw = function() {
         sketch.background(1);
