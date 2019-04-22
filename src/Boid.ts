@@ -67,21 +67,28 @@ export default class Boid {
         this.checkEdges();
     };
 
-    public seek(target: p5.Vector): p5.Vector {
-        var desired = target.sub(this.position);
+    public seek(target: Food): p5.Vector {
+        var desired = target.getPosition().sub(this.position);
+        if(desired.mag() < 5){
+            target.setEaten();
+        }
         desired.setMag(this.maxSpeed);
         return desired.sub(this.velocity);
     };
 
     public eat(food: Food[]): p5.Vector {
-        return this.seek(
-            food.reduce((closest: Food, currentValue: Food, index: number, array: Array<Food>) => {
-                let dist = this.sketch.dist(this.position.x, this.position.y, currentValue.getPosition().x, currentValue.getPosition().y);
-                if (dist < this.sketch.dist(this.position.x, this.position.y, closest.getPosition().x, closest.getPosition().y)) {
-                    return currentValue;
-                }
-            }).getPosition()
-        );
+        const closest = food.reduce((closestFood: Food, currentValue: Food, index: number, array: Array<Food>) => {
+            let dist = this.sketch.dist(this.position.x, this.position.y, currentValue.getPosition().x, currentValue.getPosition().y);
+            if (dist <= this.sketch.dist(this.position.x, this.position.y, closestFood.getPosition().x, closestFood.getPosition().y)) {
+                return currentValue;
+            } else return closestFood
+        }, food[0]) || food[0];
+        if(closest.poisoned()){
+            this.health -= 0.005;
+        } else if(!closest.poisoned()) {
+            this.health += 0.005;
+        }
+        return this.seek(closest);
     };
 
     public draw() {
