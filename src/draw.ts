@@ -3,25 +3,11 @@
 
 import Boid from './Boid';
 import Food from './Food';
+import {IDNA} from './DNA'
 import * as R from 'ramda';
 declare const p5: any;
 
-// extend existing window property, we have to put the draw and setup 
-// functinos of the global window object for p5 to work in global mode
-declare global {
-    interface Window {
-        setup: any;
-        draw: any;
-        mousePressed: any;
-        mouseReleased: any;
-        preload: any;
-        mouseClicked: any;
-        started: boolean;
-    }
-};
-
 function p5Wrapper( sketch: p5 ): any {
-
     let boids: Boid[] = [];
     let foods: Food[] = [];
     let canvasWidth = window.innerWidth;
@@ -35,16 +21,25 @@ function p5Wrapper( sketch: p5 ): any {
         )
     );
 
+    const generateInitialDNA = (): IDNA => {
+        return {
+            foodAttraction: sketch.random(-0.005, 0.005),
+            poisonAttraction: sketch.random(-0.005, 0.005),
+            foodSightRange: sketch.random(8, 100),
+            poisonSightRange: sketch.random(8, 100)
+        }
+    }
+
     sketch.setup = function() {
         sketch.createCanvas(canvasWidth, canvasHeight);
         //create food
-        for (var i = 0; i<100; i++) {
+        for (var i = 0; i<80; i++) {
             foods.push(
                 createNewFood(sketch, false)
             )
         }
         //create poison
-        for (var i = 0; i<30; i++) {
+        for (var i = 0; i<40; i++) {
             foods.push(
                 createNewFood(sketch, true)
             )
@@ -56,7 +51,8 @@ function p5Wrapper( sketch: p5 ): any {
                     new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)), 
                     sketch,
                     canvasWidth,
-                    window.innerHeight
+                    window.innerHeight,
+                    generateInitialDNA()
                 )
             )
         }
@@ -74,22 +70,29 @@ function p5Wrapper( sketch: p5 ): any {
     ]);
 
     const createPoisionConditional = R.cond([
-        [R.equals(true), (a: boolean[]) => {return createNewFood(sketch, false)}],
+        [R.equals(true), (a: boolean[]) => {return createNewFood(sketch, true)}],
         [R.equals(false), R.always(null)]
     ]);
 
     sketch.draw = function() {
         sketch.background(1);
+        //trying to be functional
         const remainingFood = R.filter(isNotNull, R.append(createFoodConditional(onPercent(0.04)), R.filter(isNotEaten, foods)));
-        const poisionedFood = R.filter(isNotNull, R.append(createPoisionConditional(onPercent(0.01)), R.filter(isPoision, foods)));
+        const poisionedFood = R.filter(isNotNull, R.append(createPoisionConditional(onPercent(0.1)), R.filter(isPoision, foods)));
 
         boids.forEach((boid: Boid) => {
             boid.behaviours(remainingFood,poisionedFood);
             boid.update();
+            let child = boid.reproduce();
+            if(child){
+                boids.push(child)
+            }
             boid.draw();
         });
+
         boids = R.filter(isNotDead, boids);
         foods = remainingFood.concat(poisionedFood);
+
         foods.forEach((food: Food) => {
             food.draw();
         });

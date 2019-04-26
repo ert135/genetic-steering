@@ -16,12 +16,12 @@ export default class Food {
         if (!this.isPoision) {
             this.sketch.fill(0, 153, 51);
             this.sketch.stroke(0, 153, 51);
-            this.sketch.ellipse(this.position.x, this.position.y, this.radius, this.radius)
-            return
+            this.sketch.ellipse(this.position.x, this.position.y, this.radius, this.radius);
+            return;
         }
         this.sketch.fill(204, 101, 192, 127);
         this.sketch.stroke(127, 63, 120);
-        this.sketch.ellipse(this.position.x, this.position.y, this.radius, this.radius)
+        this.sketch.ellipse(this.position.x, this.position.y, this.radius, this.radius);
     };
 
     public getPosition(): p5.Vector {

@@ -211,6 +211,7 @@ declare class p5 {
     /**
      * Draws an ellipse (oval) to the screen.
      */
+    ellipse(a: number, b: number, c: number): p5
     ellipse(a: number, b: number, c: number, d: number): p5
     
     /**
