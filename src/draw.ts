@@ -24,7 +24,7 @@ function p5Wrapper( sketch: p5 ): any {
     const generateInitialDNA = (): IDNA => {
         return {
             foodAttraction: sketch.random(-0.005, 0.005),
-            poisonAttraction: sketch.random(-0.005, 0.005),
+            poisonAttraction: sketch.random(-0.01, 0.008),
             foodSightRange: sketch.random(8, 100),
             poisonSightRange: sketch.random(8, 100)
         }
@@ -77,8 +77,8 @@ function p5Wrapper( sketch: p5 ): any {
     sketch.draw = function() {
         sketch.background(1);
         //trying to be functional
-        const remainingFood = R.filter(isNotNull, R.append(createFoodConditional(onPercent(0.04)), R.filter(isNotEaten, foods)));
-        const poisionedFood = R.filter(isNotNull, R.append(createPoisionConditional(onPercent(0.1)), R.filter(isPoision, foods)));
+        const remainingFood = R.filter(isNotNull, R.append(createFoodConditional(onPercent(0.08)), R.filter(isNotEaten, foods)));
+        const poisionedFood = R.filter(isNotNull, R.append(createPoisionConditional(onPercent(0.04)), R.filter(isPoision, foods)));
 
         boids.forEach((boid: Boid) => {
             boid.behaviours(remainingFood,poisionedFood);

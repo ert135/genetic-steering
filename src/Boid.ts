@@ -58,7 +58,7 @@ export default class Boid {
         this.health -= 0.005;
         this.checkHealth()
         this.velocity.add(this.acceleration);
-        this.velocity.limit(1.5);
+        this.velocity.limit(1);
         this.position.add(this.velocity);
         this.acceleration.mult(0);
         this.checkEdges();
@@ -129,11 +129,11 @@ export default class Boid {
 
         //UNCOMMENT BELOW to draw debug attraction radii
 
-        this.sketch.noFill();
-        this.sketch.stroke(0, 153, 51);
-        this.sketch.ellipse(0,0,this.DNA.foodSightRange* 2)
-        this.sketch.stroke(127, 63, 120);
-        this.sketch.ellipse(0,0,this.DNA.poisonSightRange* 2)
+        // this.sketch.noFill();
+        // this.sketch.stroke(0, 153, 51);
+        // this.sketch.ellipse(0,0,this.DNA.foodSightRange* 2)
+        // this.sketch.stroke(127, 63, 120);
+        // this.sketch.ellipse(0,0,this.DNA.poisonSightRange* 2)
 
                 this.sketch.vertex(0, -this.radius * 2);
                 this.sketch.vertex(-this.radius, this.radius);
@@ -158,17 +158,17 @@ export default class Boid {
 
     private crossOver(): IDNA {
         return {
-            foodAttraction: this.DNA.foodAttraction + 0.05,
-            poisonAttraction: this.DNA.poisonAttraction - 0.05,
-            foodSightRange: this.DNA.foodSightRange + 0.5,
-            poisonSightRange: this.DNA.poisonSightRange + 0.5
+            foodAttraction: this.DNA.foodAttraction + 0.005,
+            poisonAttraction: this.DNA.poisonAttraction - 0.005,
+            foodSightRange: this.DNA.foodSightRange + 0.05,
+            poisonSightRange: this.DNA.poisonSightRange + 0.05
         }
     }
 
     public reproduce(): Boid {
         if(this.onePercent()){
             return new Boid(
-                new p5.Vector(this.position.x, this.position.y), 
+                new p5.Vector(Math.floor(Math.random() * this.canvasWidth), Math.floor(Math.random() * this.canvasWidth)),
                 this.sketch,
                 this.canvasWidth,
                 window.innerHeight,
