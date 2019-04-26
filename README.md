@@ -1,9 +1,9 @@
-h1. genetic-steering
+# Genetic Steering
 
-h1. To run 
--Clone repo
--npm install
--webpack
--open the index.html file
+## To run:
+1. Clone repo
+2. npm install
+3. webpack
+4. open the index.html file
 
 ![Screenshot](ss.png)
