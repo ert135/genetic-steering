@@ -50,7 +50,7 @@ function p5Wrapper( sketch: p5 ): any {
             )
         }
         //create boids
-        for (var i = 0; i<10; i++) {
+        for (var i = 0; i<30; i++) {
             boids.push(
                 new Boid(
                     new p5.Vector(Math.floor(Math.random() * canvasWidth), Math.floor(Math.random() * canvasHeight)), 

@@ -76,6 +76,23 @@ export default class Boid {
         return desired.sub(this.velocity);
     };
 
+    private getFoodDistance(food: Food) {
+        return this.sketch.dist(
+            this.position.x, 
+            this.position.y, 
+            food.getPosition().x, 
+            food.getPosition().y
+        )
+    }
+
+    private adjustHealth(closest: Food) {
+        if (closest.poisoned()){
+            this.health += 0.5;
+        } else if(!closest.poisoned()) {
+            this.health += 0.5;
+        }
+    }
+
     public eat(food: Food[]): p5.Vector {
         const closest = food.reduce((closestFood: Food, currentValue: Food) => {
             const dist = this.sketch.dist(this.position.x, this.position.y, currentValue.getPosition().x, currentValue.getPosition().y);
@@ -84,10 +101,8 @@ export default class Boid {
             } else return closestFood
         }, food[0]);
 
-        if(closest.poisoned()){
-            this.health += 0.5;
-        } else if(!closest.poisoned()) {
-            this.health -= 0.5;
+        if (this.getFoodDistance(closest) < 5) {
+            this.adjustHealth(closest);
         }
 
         return this.seek(closest);
