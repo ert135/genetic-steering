@@ -8,7 +8,7 @@ export default class Food {
     constructor(p5Ref: p5, position: p5.Vector, isPoision: boolean) {
         this.sketch = p5Ref;
         this.position = position;
-        this.radius = 6;
+        this.radius = 4;
         this.isPoision = isPoision
     };
 

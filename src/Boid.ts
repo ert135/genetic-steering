@@ -1,7 +1,7 @@
 import Food from './Food';
 
 export default class Boid {
-    private initialPosition: p5.Vector
+    private initialPosition: p5.Vector;
     private sketch: p5;
     private size: number;
     private driftForce: p5.Vector;
@@ -19,7 +19,7 @@ export default class Boid {
     public dead: boolean;
 
     private dna: Array<number>;
-    private goodSteeringForce: p5.Vector;;
+    private goodSteeringForce: p5.Vector;
     private badSteeringForce: p5.Vector;
 
     constructor(
@@ -39,7 +39,7 @@ export default class Boid {
         this.canvasWidth = initialCanvasWidth;
         this.canvasHeight = initialCanvasHeight;
         this.maxforce = 0.05;
-        this.radius = 6;
+        this.radius = 4;
         this.maxSpeed = 8;
 
         this.health = 1;
@@ -61,7 +61,7 @@ export default class Boid {
         this.health -= 0.001;
         this.checkHealth()
         this.velocity.add(this.acceleration);
-        this.velocity.limit(1);
+        this.velocity.limit(2);
         this.position.add(this.velocity);
         this.acceleration.mult(0);
         this.checkEdges();
@@ -77,17 +77,19 @@ export default class Boid {
     };
 
     public eat(food: Food[]): p5.Vector {
-        const closest = food.reduce((closestFood: Food, currentValue: Food, index: number, array: Array<Food>) => {
-            let dist = this.sketch.dist(this.position.x, this.position.y, currentValue.getPosition().x, currentValue.getPosition().y);
+        const closest = food.reduce((closestFood: Food, currentValue: Food) => {
+            const dist = this.sketch.dist(this.position.x, this.position.y, currentValue.getPosition().x, currentValue.getPosition().y);
             if (dist <= this.sketch.dist(this.position.x, this.position.y, closestFood.getPosition().x, closestFood.getPosition().y)) {
                 return currentValue;
             } else return closestFood
-        }, food[0]) || food[0];
+        }, food[0]);
+
         if(closest.poisoned()){
-            this.health -= 0.005;
+            this.health += 0.5;
         } else if(!closest.poisoned()) {
-            this.health += 0.005;
+            this.health -= 0.5;
         }
+
         return this.seek(closest);
     };
 
@@ -117,8 +119,8 @@ export default class Boid {
 
     private getDefaultDna(): any {
         this.dna=[];
-        this.dna[0] = this.sketch.random(0.01, 0.01);
-        this.dna[1] = this.sketch.random(0, 0);
+        this.dna[0] = this.sketch.random(-0.05, 0.05);
+        this.dna[1] = this.sketch.random(-0.05, 0.05);
     };
 
     private getRandomArbitrary(min: number, max: number) {
